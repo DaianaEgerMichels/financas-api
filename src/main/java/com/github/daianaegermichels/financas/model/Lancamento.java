@@ -4,6 +4,7 @@ import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.enuns.TipoLancamento;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.convert.Jsr310Converters;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 @Entity
+@NoArgsConstructor
 @Table(name = "lancamento", schema = "financas")
 public class Lancamento {
 
