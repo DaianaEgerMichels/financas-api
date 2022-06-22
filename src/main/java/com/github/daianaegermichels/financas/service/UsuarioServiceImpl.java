@@ -1,8 +1,8 @@
 package com.github.daianaegermichels.financas.service;
 
+import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Usuario;
 import com.github.daianaegermichels.financas.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +26,9 @@ public class UsuarioServiceImpl implements UsuarioService{
 
     @Override
     public void validarEmail(String email) {
-
+        boolean existe = usuarioRepository.existsByEmail(email);
+        if(existe){
+            throw new RegraNegocioException("Já existe um usuário com este email!");
+        }
     }
 }
