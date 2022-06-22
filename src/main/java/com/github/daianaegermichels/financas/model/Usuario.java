@@ -2,12 +2,14 @@ package com.github.daianaegermichels.financas.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
 @Builder
 @Entity
+@NoArgsConstructor
 @Table(name = "usuario", schema = "financas")
 public class Usuario {
 
