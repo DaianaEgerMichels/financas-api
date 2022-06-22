@@ -1,5 +1,8 @@
 package com.github.daianaegermichels.financas.model;
 
+import com.github.daianaegermichels.financas.enuns.StatusLancamento;
+import com.github.daianaegermichels.financas.enuns.TipoLancamento;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.convert.Jsr310Converters;
 
@@ -8,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@Builder
 @Entity
 @Table(name = "lancamento", schema = "financas")
 public class Lancamento {
@@ -16,6 +20,9 @@ public class Lancamento {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "descricao")
+    private String descricao;
 
     @Column(name = "mes")
     private Integer mes;
@@ -33,4 +40,12 @@ public class Lancamento {
     @Column(name = "data_cadastro")
     @Convert(converter = Jsr310Converters.LocalDateToDateConverter.class)
     private LocalDate dataCadastro;
+
+    @Column(name= "tipo")
+    @Enumerated(value = EnumType.STRING)
+    private TipoLancamento tipo;
+
+    @Column(name= "status")
+    @Enumerated(value = EnumType.STRING)
+    private StatusLancamento status;
 }
