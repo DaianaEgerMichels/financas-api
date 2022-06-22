@@ -1,5 +1,6 @@
 package com.github.daianaegermichels.financas.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "usuario", schema = "financas")
 public class Usuario {
 
