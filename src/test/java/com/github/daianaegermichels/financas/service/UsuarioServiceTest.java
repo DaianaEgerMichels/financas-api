@@ -1,5 +1,6 @@
 package com.github.daianaegermichels.financas.service;
 
+import com.github.daianaegermichels.financas.exception.ErroAutenticacao;
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Usuario;
 import com.github.daianaegermichels.financas.repository.UsuarioRepository;
@@ -73,6 +74,16 @@ public class UsuarioServiceTest {
         assertEquals(criarUsuario().getEmail(), result.getEmail());
         assertEquals(criarUsuario().getSenha(), result.getSenha());
         assertEquals(criarUsuario().getNome(), result.getNome());
+    }
+
+    @Test
+    @DisplayName("Email inválido")
+    public void deveLancarExcecaoQuandoNaoEncontrarUsuarioCadastradoComOEmailInformado(){
+        //cenário
+        when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+
+        //ação
+        assertThrows(ErroAutenticacao.class, () -> usuarioService.autenticar("email@email.com", "senha"));
     }
 
     public static Usuario criarUsuario() {
