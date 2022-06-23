@@ -1,2 +1,4 @@
-package com.github.daianaegermichels.financas.controller;public class UsuarioControllerTest {
+package com.github.daianaegermichels.financas.controller;
+
+public class UsuarioControllerTest {
 }

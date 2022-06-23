@@ -1,26 +1,21 @@
 package com.github.daianaegermichels.financas.service;
 
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;
+import com.github.daianaegermichels.financas.model.Usuario;
 import com.github.daianaegermichels.financas.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static com.github.daianaegermichels.financas.repository.UsuarioRepositoryTest.criarUsuario;
+import org.springframework.test.context.ActiveProfiles;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-//@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
 
@@ -58,5 +53,14 @@ public class UsuarioServiceTest {
 
         //acao
         assertThrows(RegraNegocioException.class, () -> usuarioService.validarEmail("usuario@email.com"));
+    }
+
+    public static Usuario criarUsuario() {
+        return Usuario
+                .builder()
+                .nome("usuario")
+                .email("usuario@email.com")
+                .senha("senha")
+                .build();
     }
 }
