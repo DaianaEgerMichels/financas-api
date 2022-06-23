@@ -86,6 +86,16 @@ public class UsuarioServiceTest {
         assertThrows(ErroAutenticacao.class, () -> usuarioService.autenticar("email@email.com", "senha"));
     }
 
+    @Test
+    @DisplayName("Senha inválida")
+    public void deveLancarExcecaoQuandoPassarUmaSenhaIncorretaParaOEmailInformado(){
+        //cenário
+        when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+
+        //ação
+        assertThrows(ErroAutenticacao.class, () -> usuarioService.autenticar("usuario@email.com", "senha2"));
+    }
+
     public static Usuario criarUsuario() {
         return Usuario
                 .builder()
