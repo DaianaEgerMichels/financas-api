@@ -17,9 +17,12 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -108,9 +111,27 @@ public class UsuarioServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Salvar usuário")
+    public void deveSalvarUmUsuario(){
+        //cenário
+        doNothing().when(service).validarEmail(anyString());
+        when(repository.save(Mockito.any(Usuario.class))).thenReturn(criarUsuario());
+
+        //ação
+        var usuarioSalvo = usuarioService.salvarUsuario(criarUsuario());
+        assertThat(usuarioSalvo).isNotNull();
+        assertEquals(usuarioSalvo.getId(), criarUsuario().getId());
+        assertEquals(usuarioSalvo.getNome(), criarUsuario().getNome());
+        assertEquals(usuarioSalvo.getEmail(), criarUsuario().getEmail());
+        assertEquals(usuarioSalvo.getSenha(), criarUsuario().getSenha());
+
+    }
+
     public static Usuario criarUsuario() {
         return Usuario
                 .builder()
+                .id(1L)
                 .nome("usuario")
                 .email("usuario@email.com")
                 .senha("senha")
