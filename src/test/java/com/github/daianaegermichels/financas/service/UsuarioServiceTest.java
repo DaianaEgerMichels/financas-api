@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -80,20 +81,31 @@ public class UsuarioServiceTest {
     @DisplayName("Email inválido")
     public void deveLancarExcecaoQuandoNaoEncontrarUsuarioCadastradoComOEmailInformado(){
         //cenário
-        when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+        when(repository.findByEmail(anyString())).thenThrow(new ErroAutenticacao("Usuário não encontrado para o email informado!"));
 
         //ação
-        assertThrows(ErroAutenticacao.class, () -> usuarioService.autenticar("email@email.com", "senha"));
+        try{
+            usuarioService.autenticar("email@email.com", criarUsuario().getSenha());
+        } catch (Exception ex){
+            assertEquals(ErroAutenticacao.class, ex.getClass());
+            assertEquals("Usuário não encontrado para o email informado!", ex.getMessage());
+        }
     }
 
     @Test
     @DisplayName("Senha inválida")
     public void deveLancarExcecaoQuandoPassarUmaSenhaIncorretaParaOEmailInformado(){
         //cenário
-        when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+        when(repository.findByEmail(criarUsuario().getEmail())).thenReturn(Optional.of(criarUsuario()));
 
         //ação
-        assertThrows(ErroAutenticacao.class, () -> usuarioService.autenticar("usuario@email.com", "senha2"));
+        try{
+            usuarioService.autenticar("usuario@email.com", "12345");
+        } catch (Exception ex){
+            assertEquals(ErroAutenticacao.class, ex.getClass());
+            assertEquals("Senha inválida!", ex.getMessage());
+        }
+
     }
 
     public static Usuario criarUsuario() {
