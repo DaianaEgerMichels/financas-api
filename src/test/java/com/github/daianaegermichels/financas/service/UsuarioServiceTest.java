@@ -22,8 +22,7 @@ import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
@@ -125,6 +124,25 @@ public class UsuarioServiceTest {
         assertEquals(usuarioSalvo.getNome(), criarUsuario().getNome());
         assertEquals(usuarioSalvo.getEmail(), criarUsuario().getEmail());
         assertEquals(usuarioSalvo.getSenha(), criarUsuario().getSenha());
+
+    }
+
+    @Test
+    @DisplayName("Não salvar usuário")
+    public void naoDeveSalvarUsuarioComEmailJaCadastrado(){
+        //cenário
+        String email = "usuario@email.com";
+        var usuario = Usuario.builder().email(email).build();
+        doThrow(RegraNegocioException.class).when(service).validarEmail(email);
+
+        //ação
+        try{
+            usuarioService.salvarUsuario(usuario);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Já existe um usuário com este email!", ex.getMessage());
+            verify(repository, never()).save(usuario);
+        }
 
     }
 
