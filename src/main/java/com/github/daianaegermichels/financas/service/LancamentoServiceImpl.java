@@ -4,6 +4,7 @@ import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.model.Lancamento;
 import com.github.daianaegermichels.financas.repository.LancamentoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,8 +18,9 @@ public class LancamentoServiceImpl implements LancamentoService{
     }
 
     @Override
+    @Transactional
     public Lancamento salvar(Lancamento lancamento) {
-        return null;
+        return repository.save(lancamento);
     }
 
     @Override
