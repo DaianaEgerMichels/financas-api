@@ -3,6 +3,8 @@ package com.github.daianaegermichels.financas.service;
 import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.model.Lancamento;
 import com.github.daianaegermichels.financas.repository.LancamentoRepository;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +41,14 @@ public class LancamentoServiceImpl implements LancamentoService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Lancamento> buscar(Lancamento lancamentoFiltro) {
-        return null;
+        Example example = Example.of(lancamentoFiltro,
+                ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+
+        return repository.findAll(example);
     }
 
     @Override
