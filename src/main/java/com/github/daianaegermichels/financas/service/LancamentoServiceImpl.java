@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class LancamentoServiceImpl implements LancamentoService{
@@ -25,7 +26,8 @@ public class LancamentoServiceImpl implements LancamentoService{
 
     @Override
     public Lancamento atualizar(Lancamento lancamento) {
-        return null;
+        Objects.requireNonNull(lancamento.getId());
+        return repository.save(lancamento);
     }
 
     @Override
