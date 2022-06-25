@@ -17,10 +17,12 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 public class UsuarioServiceTest {
@@ -108,9 +110,46 @@ public class UsuarioServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Salvar usuário")
+    public void deveSalvarUmUsuario(){
+        //cenário
+        doNothing().when(service).validarEmail(anyString());
+        when(repository.save(Mockito.any(Usuario.class))).thenReturn(criarUsuario());
+
+        //ação
+        var usuarioSalvo = usuarioService.salvarUsuario(criarUsuario());
+        assertThat(usuarioSalvo).isNotNull();
+        assertEquals(usuarioSalvo.getId(), criarUsuario().getId());
+        assertEquals(usuarioSalvo.getNome(), criarUsuario().getNome());
+        assertEquals(usuarioSalvo.getEmail(), criarUsuario().getEmail());
+        assertEquals(usuarioSalvo.getSenha(), criarUsuario().getSenha());
+
+    }
+
+    @Test
+    @DisplayName("Não salvar usuário")
+    public void naoDeveSalvarUsuarioComEmailJaCadastrado(){
+        //cenário
+        String email = "usuario@email.com";
+        var usuario = Usuario.builder().email(email).build();
+        doThrow(RegraNegocioException.class).when(service).validarEmail(email);
+
+        //ação
+        try{
+            usuarioService.salvarUsuario(usuario);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Já existe um usuário com este email!", ex.getMessage());
+            verify(repository, never()).save(usuario);
+        }
+
+    }
+
     public static Usuario criarUsuario() {
         return Usuario
                 .builder()
+                .id(1L)
                 .nome("usuario")
                 .email("usuario@email.com")
                 .senha("senha")
