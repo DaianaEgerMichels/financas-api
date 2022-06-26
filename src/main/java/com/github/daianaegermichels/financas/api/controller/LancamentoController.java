@@ -30,7 +30,13 @@ public class LancamentoController {
 
     @PostMapping
     public ResponseEntity salvar (@RequestBody LancamentoDTO dto){
-    return  new ResponseEntity<String>(HttpStatus.OK);
+        try{
+            var lancamento = converter(dto);
+            lancamento = service.salvar(lancamento);
+            return ResponseEntity.ok(lancamento);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     private Lancamento converter(LancamentoDTO dto){
