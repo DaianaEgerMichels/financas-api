@@ -71,7 +71,7 @@ public class LancamentoController {
         lancamentoFiltro.setAno(ano);
 
         var usuario = usuarioService.obterPorId(idUsuario);
-        if(usuario.isPresent()){
+        if(!usuario.isPresent()){
             return new ResponseEntity("Não foi possível realizar a consulta. Usuário não encontrado para o Id informado!", HttpStatus.BAD_REQUEST);
         } else {
             lancamentoFiltro.setUsuario(usuario.get());
