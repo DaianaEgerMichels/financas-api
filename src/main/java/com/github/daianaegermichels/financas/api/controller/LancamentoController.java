@@ -51,6 +51,14 @@ public class LancamentoController {
 
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity deletar(@PathVariable("id") Long id){
+        return service.obterPorId(id).map(entity -> {
+            service.deletar(entity);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }).orElseGet(()-> ResponseEntity.badRequest().body("Lançamento não encontrado na base de dados!"));
+    }
+
     private Lancamento converter(LancamentoDTO dto){
         var lancamento = new Lancamento();
         lancamento.setId(dto.getId());
