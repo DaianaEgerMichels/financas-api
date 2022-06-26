@@ -10,10 +10,7 @@ import com.github.daianaegermichels.financas.service.UsuarioService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/lancamentos")
@@ -33,10 +30,25 @@ public class LancamentoController {
         try{
             var lancamento = converter(dto);
             lancamento = service.salvar(lancamento);
-            return ResponseEntity.ok(lancamento);
+            return new ResponseEntity(lancamento, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity atualizar (@PathVariable("id") Long id, @RequestBody LancamentoDTO dto){
+            return service.obterPorId(id).map(entity -> {
+                try {
+                    var lancamento = converter(dto);
+                    lancamento.setId(entity.getId());
+                    service.atualizar(lancamento);
+                    return new ResponseEntity(lancamento, HttpStatus.OK);
+                } catch (RegraNegocioException e){
+                    return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+                }
+                }).orElseGet(()-> ResponseEntity.badRequest().body("Lançamento não encontrado na base de dados!"));
+
     }
 
     private Lancamento converter(LancamentoDTO dto){
