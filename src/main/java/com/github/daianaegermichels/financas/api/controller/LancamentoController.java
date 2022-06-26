@@ -59,6 +59,30 @@ public class LancamentoController {
         }).orElseGet(()-> ResponseEntity.badRequest().body("Lançamento não encontrado na base de dados!"));
     }
 
+    @GetMapping
+    public ResponseEntity buscar (
+            @RequestParam(value = "descricao", required = false) String descricao,
+            @RequestParam(value = "mes", required = false) Integer mes,
+            @RequestParam(value = "ano", required = false) Integer ano,
+            @RequestParam(value = "usuario") Long idUsuario
+    ){
+        var lancamentoFiltro = new Lancamento();
+        lancamentoFiltro.setDescricao(descricao);
+        lancamentoFiltro.setMes(mes);
+        lancamentoFiltro.setAno(ano);
+
+        var usuario = usuarioService.obterPorId(idUsuario);
+        if(usuario.isPresent()){
+            return new ResponseEntity("Não foi possível realizar a consulta. Usuário não encontrado para o Id informado!", HttpStatus.BAD_REQUEST);
+        } else {
+            lancamentoFiltro.setUsuario(usuario.get());
+        }
+
+        var lancamentos = service.buscar(lancamentoFiltro);
+        return ResponseEntity.ok(lancamentos);
+
+    }
+
     private Lancamento converter(LancamentoDTO dto){
         var lancamento = new Lancamento();
         lancamento.setId(dto.getId());
