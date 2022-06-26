@@ -4,6 +4,7 @@ import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.model.Lancamento;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LancamentoService {
 
@@ -18,4 +19,6 @@ public interface LancamentoService {
     void atualizarStatus(Lancamento lancamento, StatusLancamento status);
 
     void validar(Lancamento lancamento);
+
+    Optional<Lancamento> obterPorId(Long id);
 }

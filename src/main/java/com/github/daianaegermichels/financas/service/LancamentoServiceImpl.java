@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class LancamentoServiceImpl implements LancamentoService{
@@ -64,7 +65,7 @@ public class LancamentoServiceImpl implements LancamentoService{
     @Override
     public void validar(Lancamento lancamento) {
         if(lancamento.getDescricao() == null || lancamento.getDescricao().trim().equals("")){
-            throw new RegraNegocioException("Informe uma Descrição válida!")
+            throw new RegraNegocioException("Informe uma Descrição válida!");
         }
 
         if(lancamento.getMes() == null || lancamento.getMes() < 1 || lancamento.getMes() > 12){
@@ -87,4 +88,10 @@ public class LancamentoServiceImpl implements LancamentoService{
             throw new RegraNegocioException("Informe um Tipo de Lançamento!");
         }
     }
+
+    @Override
+    public Optional<Lancamento> obterPorId(Long id) {
+        return repository.findById(id);
+    }
+
 }
