@@ -7,7 +7,6 @@ import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Lancamento;
 import com.github.daianaegermichels.financas.service.LancamentoService;
 import com.github.daianaegermichels.financas.service.UsuarioService;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
