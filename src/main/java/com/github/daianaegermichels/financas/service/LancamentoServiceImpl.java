@@ -1,6 +1,7 @@
 package com.github.daianaegermichels.financas.service;
 
 import com.github.daianaegermichels.financas.enuns.StatusLancamento;
+import com.github.daianaegermichels.financas.enuns.TipoLancamento;
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Lancamento;
 import com.github.daianaegermichels.financas.repository.LancamentoRepository;
@@ -93,5 +94,22 @@ public class LancamentoServiceImpl implements LancamentoService{
     public Optional<Lancamento> obterPorId(Long id) {
         return repository.findById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal obterSaldoPorUsuario(Long id) {
+        var receitas = repository.obterSaldoPorTipoDeLancamentoEUsuario(id, TipoLancamento.RECEITA);
+        var despesas = repository.obterSaldoPorTipoDeLancamentoEUsuario(id, TipoLancamento.DESPESA);
+
+        if (receitas == null){
+            receitas = BigDecimal.ZERO;
+        }
+        if (despesas == null){
+            despesas = BigDecimal.ZERO;
+        }
+
+        return receitas.subtract(despesas);
+    }
+
 
 }

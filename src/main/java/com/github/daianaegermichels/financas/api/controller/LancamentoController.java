@@ -1,5 +1,6 @@
 package com.github.daianaegermichels.financas.api.controller;
 
+import com.github.daianaegermichels.financas.dto.AtualizaStatusDTO;
 import com.github.daianaegermichels.financas.dto.LancamentoDTO;
 import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.enuns.TipoLancamento;
@@ -10,6 +11,9 @@ import com.github.daianaegermichels.financas.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/lancamentos")
@@ -29,7 +33,11 @@ public class LancamentoController {
         try{
             var lancamento = converter(dto);
             lancamento = service.salvar(lancamento);
-            return new ResponseEntity(lancamento, HttpStatus.CREATED);
+
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(lancamento.getId()).toUri();
+            return ResponseEntity.created(location).body(lancamento);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -48,6 +56,24 @@ public class LancamentoController {
                 }
                 }).orElseGet(()-> ResponseEntity.badRequest().body("Lançamento não encontrado na base de dados!"));
 
+    }
+
+    @PutMapping("{id}/atualiza-status")
+    public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto){
+        return service.obterPorId(id).map( entity -> {
+            var statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
+            if(statusSelecionado == null){
+                return ResponseEntity.badRequest().body("Status inválido, não foi possível atualizar. Informe um status válido!");
+            }
+            try{
+                entity.setStatus(statusSelecionado);
+                service.atualizar(entity);
+                return ResponseEntity.ok(entity);
+            } catch (RegraNegocioException e)
+            {
+                return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+        }).orElseGet(()-> ResponseEntity.badRequest().body("Lançamento não encontrado na base de dados!"));
     }
 
     @DeleteMapping("{id}")
