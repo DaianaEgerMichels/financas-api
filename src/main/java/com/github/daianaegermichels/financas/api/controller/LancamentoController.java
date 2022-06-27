@@ -1,5 +1,6 @@
 package com.github.daianaegermichels.financas.api.controller;
 
+import com.github.daianaegermichels.financas.dto.AtualizaStatusDTO;
 import com.github.daianaegermichels.financas.dto.LancamentoDTO;
 import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.enuns.TipoLancamento;
@@ -55,6 +56,24 @@ public class LancamentoController {
                 }
                 }).orElseGet(()-> ResponseEntity.badRequest().body("Lançamento não encontrado na base de dados!"));
 
+    }
+
+    @PutMapping("{id}/atualiza-status")
+    public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto){
+        return service.obterPorId(id).map( entity -> {
+            var statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
+            if(statusSelecionado == null){
+                return ResponseEntity.badRequest().body("Status inválido, não foi possível atualizar. Informe um status válido!");
+            }
+            try{
+                entity.setStatus(statusSelecionado);
+                service.atualizar(entity);
+                return ResponseEntity.ok(entity);
+            } catch (RegraNegocioException e)
+            {
+                return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+        }).orElseGet(()-> ResponseEntity.badRequest().body("Lançamento não encontrado na base de dados!"));
     }
 
     @DeleteMapping("{id}")
