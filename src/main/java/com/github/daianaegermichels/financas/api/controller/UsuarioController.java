@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -41,7 +44,11 @@ public class UsuarioController {
 
         try{
             var usuarioSalvo = usuarioService.salvarUsuario(usuario);
-            return new ResponseEntity<>(usuarioSalvo, HttpStatus.CREATED);
+
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(usuarioSalvo.getId()).toUri();
+            return ResponseEntity.created(location).body(usuarioSalvo);
         } catch (RegraNegocioException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

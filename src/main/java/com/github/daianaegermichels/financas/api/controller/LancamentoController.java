@@ -10,6 +10,9 @@ import com.github.daianaegermichels.financas.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/lancamentos")
@@ -29,7 +32,11 @@ public class LancamentoController {
         try{
             var lancamento = converter(dto);
             lancamento = service.salvar(lancamento);
-            return new ResponseEntity(lancamento, HttpStatus.CREATED);
+
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(lancamento.getId()).toUri();
+            return ResponseEntity.created(location).body(lancamento);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
