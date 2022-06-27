@@ -3,6 +3,7 @@ package com.github.daianaegermichels.financas.service;
 import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.model.Lancamento;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,6 @@ public interface LancamentoService {
     void validar(Lancamento lancamento);
 
     Optional<Lancamento> obterPorId(Long id);
+
+    BigDecimal obterSaldoPorUsuario(Long id);
 }
