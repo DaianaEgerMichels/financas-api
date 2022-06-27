@@ -4,13 +4,11 @@ import com.github.daianaegermichels.financas.dto.UsuarioDTO;
 import com.github.daianaegermichels.financas.exception.ErroAutenticacao;
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Usuario;
+import com.github.daianaegermichels.financas.service.LancamentoService;
 import com.github.daianaegermichels.financas.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -21,8 +19,11 @@ public class UsuarioController {
 
     private UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    private LancamentoService lancamentoService;
+
+    public UsuarioController(UsuarioService usuarioService, LancamentoService lancamentoService) {
         this.usuarioService = usuarioService;
+        this.lancamentoService = lancamentoService;
     }
 
     @PostMapping("/autenticar")
@@ -52,5 +53,15 @@ public class UsuarioController {
         } catch (RegraNegocioException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("{id}/saldo")
+    public ResponseEntity obterSaldo(@PathVariable("id") Long id){
+        var usuario = usuarioService.obterPorId(id);
+        if(!usuario.isPresent()){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        var saldo = lancamentoService.obterSaldoPorUsuario(id);
+        return ResponseEntity.ok(saldo);
     }
 }
