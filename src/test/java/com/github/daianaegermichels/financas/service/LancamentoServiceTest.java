@@ -2,6 +2,7 @@ package com.github.daianaegermichels.financas.service;
 
 import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.enuns.TipoLancamento;
+import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Lancamento;
 import com.github.daianaegermichels.financas.model.Usuario;
 import com.github.daianaegermichels.financas.repository.LancamentoRepository;
@@ -21,8 +22,7 @@ import static com.github.daianaegermichels.financas.service.UsuarioServiceTest.c
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ActiveProfiles("Test")
@@ -58,12 +58,24 @@ public class LancamentoServiceTest {
         //validação
         assertThat(lancamentoSalvo).isNotNull();
         assertEquals(lancamentoSalvo.getId(), criarLancamento().getId());
+        assertThat(lancamentoSalvo.getStatus()).isEqualByComparingTo(StatusLancamento.PENDENTE);
     }
 
     @Test
     @DisplayName("Não salvar lançamento")
     public void naoDeveSalvarUmLancamentoQuandoHouverErroDeValidacao(){
 
+        //cenário
+        var lancamento = Lancamento.builder().ano(2021).descricao("Teste lançamento inválido").mes(5).dataCadastro(LocalDate.now()).build();
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.salvar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            verify(repository, never()).save(lancamento);
+        }
     }
 
     public static Lancamento criarLancamento() {
