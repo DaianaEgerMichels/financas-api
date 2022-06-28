@@ -92,6 +92,19 @@ public class LancamentoServiceTest {
         verify(repository, times(1)).save(lancamentoSalvo);
     }
 
+    @Test
+    @DisplayName("Atualização inválida")
+    public void deveLancarErroAoTentarAtualizarUmLancamentoQueNaoFoiSalvo(){
+        var lancamentoNaoSalvo = criarLancamento();
+        try{
+            lancamentoService.atualizar(lancamentoNaoSalvo);
+        } catch (Exception ex){
+            assertEquals(NullPointerException.class, ex.getClass());
+            verify(repository, never()).save(lancamentoNaoSalvo);
+        }
+
+    }
+
     public static Lancamento criarLancamento() {
         return Lancamento.builder()
                 .id(1l)
