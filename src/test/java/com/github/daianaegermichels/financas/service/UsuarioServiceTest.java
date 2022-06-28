@@ -3,6 +3,8 @@ package com.github.daianaegermichels.financas.service;
 import com.github.daianaegermichels.financas.exception.ErroAutenticacao;
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Usuario;
+import com.github.daianaegermichels.financas.model.service.UsuarioService;
+import com.github.daianaegermichels.financas.model.service.UsuarioServiceImpl;
 import com.github.daianaegermichels.financas.repository.UsuarioRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

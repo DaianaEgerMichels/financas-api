@@ -4,7 +4,8 @@ import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.enuns.TipoLancamento;
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Lancamento;
-import com.github.daianaegermichels.financas.model.Usuario;
+import com.github.daianaegermichels.financas.model.service.LancamentoService;
+import com.github.daianaegermichels.financas.model.service.LancamentoServiceImpl;
 import com.github.daianaegermichels.financas.repository.LancamentoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +22,6 @@ import java.time.LocalDate;
 import static com.github.daianaegermichels.financas.service.UsuarioServiceTest.criarUsuario;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
