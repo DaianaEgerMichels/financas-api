@@ -78,6 +78,20 @@ public class LancamentoServiceTest {
         }
     }
 
+    @Test
+    @DisplayName("Atualizar lançamento")
+    public void deveAtualizarLancamento(){
+        var lancamentoSalvo = criarLancamento();
+        lancamentoSalvo.setDescricao("Atualizando lançamento");
+
+        doNothing().when(service).validar(lancamentoSalvo);
+        when(repository.save(lancamentoSalvo)).thenReturn(lancamentoSalvo);
+
+        lancamentoService.atualizar(lancamentoSalvo);
+
+        verify(repository, times(1)).save(lancamentoSalvo);
+    }
+
     public static Lancamento criarLancamento() {
         return Lancamento.builder()
                 .id(1l)
