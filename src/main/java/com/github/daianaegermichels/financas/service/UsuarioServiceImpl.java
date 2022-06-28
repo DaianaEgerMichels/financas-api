@@ -1,4 +1,4 @@
-package com.github.daianaegermichels.financas.model.service;
+package com.github.daianaegermichels.financas.service;
 
 import com.github.daianaegermichels.financas.exception.ErroAutenticacao;
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;

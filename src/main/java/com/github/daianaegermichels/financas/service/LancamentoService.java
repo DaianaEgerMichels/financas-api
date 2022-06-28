@@ -1,4 +1,4 @@
-package com.github.daianaegermichels.financas.model.service;
+package com.github.daianaegermichels.financas.service;
 
 import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.model.Lancamento;
