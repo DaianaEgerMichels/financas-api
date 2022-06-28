@@ -4,8 +4,6 @@ import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.enuns.TipoLancamento;
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Lancamento;
-import com.github.daianaegermichels.financas.model.service.LancamentoService;
-import com.github.daianaegermichels.financas.model.service.LancamentoServiceImpl;
 import com.github.daianaegermichels.financas.repository.LancamentoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -103,6 +101,44 @@ public class LancamentoServiceTest {
             verify(repository, never()).save(lancamentoNaoSalvo);
         }
 
+    }
+
+    @Test
+    @DisplayName("Deletar lançamento")
+    public void deveDeletarUmLancamentoQuandoPassarUmLancamentoComIdValido(){
+        //cenário
+        var lancamento = criarLancamento();
+
+        //execução
+        lancamentoService.deletar(lancamento);
+
+        //verificação
+        verify(repository).delete(lancamento);
+    }
+
+    @Test
+    @DisplayName("Não deletar lançamento")
+    public void naoDeveDeletarUmLancamentoQuandoPassarUmLancamentoInvalido(){
+
+        //cenário
+        var lancamento = Lancamento.builder()
+                .ano(2022)
+                .mes(6)
+                .descricao("Recebimento de Pix")
+                .valor(BigDecimal.valueOf(100.00))
+                .tipo(TipoLancamento.RECEITA)
+                .status(StatusLancamento.PENDENTE)
+                .dataCadastro(LocalDate.now())
+                .usuario(criarUsuario())
+                .build();
+
+        //execução
+        try{
+            lancamentoService.deletar(lancamento);
+        } catch (Exception ex){
+            assertEquals(NullPointerException.class, ex.getClass());
+            verify(repository, never()).delete(lancamento);
+        }
     }
 
     public static Lancamento criarLancamento() {
