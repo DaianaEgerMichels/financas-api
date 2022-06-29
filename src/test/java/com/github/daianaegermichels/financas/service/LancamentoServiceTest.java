@@ -12,10 +12,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Example;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.github.daianaegermichels.financas.service.UsuarioServiceTest.criarUsuario;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -139,6 +142,23 @@ public class LancamentoServiceTest {
             assertEquals(NullPointerException.class, ex.getClass());
             verify(repository, never()).delete(lancamento);
         }
+    }
+
+    @Test
+    @DisplayName("Buscar lançamentos")
+    public void deveBuscarLancamentosQuandoPassarUmFiltro(){
+        //cenário
+        var lancamento = criarLancamento();
+        var lista = new ArrayList< Lancamento >();
+        lista.add(lancamento);
+        when(repository.findAll(any(Example.class))).thenReturn(lista);
+
+        //execução
+        var resultado = lancamentoService.buscar(lancamento);
+
+        //verificação
+        assertThat(resultado).isNotNull();
+        assertThat(resultado).contains(lancamento);
     }
 
     public static Lancamento criarLancamento() {
