@@ -206,6 +206,222 @@ public class LancamentoServiceTest {
         assertThat(resultado.isPresent()).isFalse();
     }
 
+    @Test
+    @DisplayName("Ano inválido - null")
+    public void naoDeveValidarUmLancamentoQuandoOAnoForNull(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setAno(null);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Ano válido!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Ano inválido - número de caracteres")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmAnoValido(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setAno(202);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Ano válido!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Mês inválido < 0")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmMesValido(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setMes(0);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Mês válido!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Mês inválido > 12")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmMesCorreto(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setMes(13);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Mês válido!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Mês inválido = null")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmMes(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setMes(null);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Mês válido!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Usuário inválido")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmUsuarioValido(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setUsuario(null);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Usuário!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Usuário inválido - id null")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmUsuarioComIdValido(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.getUsuario().setId(null);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Usuário!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Valor inválido")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmValorValido(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setValor(BigDecimal.valueOf(0));
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Valor válido!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Valor null")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmValor(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setValor(null);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Valor válido!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Tipo de lançamento inválido")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmTipoDeLancamentoValido(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setTipo(null);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe um Tipo de Lançamento!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Descrição inválida")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmaDescricaoValida(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setDescricao("");
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe uma Descrição válida!", ex.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Descrição null")
+    public void naoDeveValidarUmLancamentoQuandoNaoInformarUmaDescricao(){
+
+        //cenário
+        var lancamento = criarLancamento();
+        lancamento.setDescricao(null);
+        doThrow(RegraNegocioException.class).when(service).validar(lancamento);
+
+        //ação
+        try{
+            lancamentoService.validar(lancamento);
+        } catch (Exception ex){
+            assertEquals(RegraNegocioException.class, ex.getClass());
+            assertEquals("Informe uma Descrição válida!", ex.getMessage());
+        }
+    }
+
     public static Lancamento criarLancamento() {
         return Lancamento.builder()
                 .id(1l)
