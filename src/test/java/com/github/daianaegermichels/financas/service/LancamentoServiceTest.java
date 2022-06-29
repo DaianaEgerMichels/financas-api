@@ -4,7 +4,6 @@ import com.github.daianaegermichels.financas.enuns.StatusLancamento;
 import com.github.daianaegermichels.financas.enuns.TipoLancamento;
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Lancamento;
-import com.github.daianaegermichels.financas.model.Usuario;
 import com.github.daianaegermichels.financas.repository.LancamentoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,15 +12,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Example;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import static com.github.daianaegermichels.financas.service.UsuarioServiceTest.criarUsuario;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
@@ -103,6 +104,106 @@ public class LancamentoServiceTest {
             verify(repository, never()).save(lancamentoNaoSalvo);
         }
 
+    }
+
+    @Test
+    @DisplayName("Deletar lançamento")
+    public void deveDeletarUmLancamentoQuandoPassarUmLancamentoComIdValido(){
+        //cenário
+        var lancamento = criarLancamento();
+
+        //execução
+        lancamentoService.deletar(lancamento);
+
+        //verificação
+        verify(repository).delete(lancamento);
+    }
+
+    @Test
+    @DisplayName("Não deletar lançamento")
+    public void naoDeveDeletarUmLancamentoQuandoPassarUmLancamentoInvalido(){
+
+        //cenário
+        var lancamento = Lancamento.builder()
+                .ano(2022)
+                .mes(6)
+                .descricao("Recebimento de Pix")
+                .valor(BigDecimal.valueOf(100.00))
+                .tipo(TipoLancamento.RECEITA)
+                .status(StatusLancamento.PENDENTE)
+                .dataCadastro(LocalDate.now())
+                .usuario(criarUsuario())
+                .build();
+
+        //execução
+        try{
+            lancamentoService.deletar(lancamento);
+        } catch (Exception ex){
+            assertEquals(NullPointerException.class, ex.getClass());
+            verify(repository, never()).delete(lancamento);
+        }
+    }
+
+    @Test
+    @DisplayName("Buscar lançamentos")
+    public void deveBuscarLancamentosQuandoPassarUmFiltro(){
+        //cenário
+        var lancamento = criarLancamento();
+        var lista = new ArrayList< Lancamento >();
+        lista.add(lancamento);
+        when(repository.findAll(any(Example.class))).thenReturn(lista);
+
+        //execução
+        var resultado = lancamentoService.buscar(lancamento);
+
+        //verificação
+        assertThat(resultado).isNotNull();
+        assertThat(resultado).contains(lancamento);
+    }
+
+    @Test
+    @DisplayName("Atualizar status lançamento")
+    public void deveAtualizarStatusDoLancamentoQuandoPassarUmStatusValido(){
+        //cenário
+        var lancamento = criarLancamento();
+        var novoStatus = StatusLancamento.EFETIVADO;
+
+        //execução
+        lancamentoService.atualizarStatus(lancamento, novoStatus);
+
+        //verificação
+        assertThat(lancamento.getStatus()).isEqualByComparingTo(novoStatus);
+        verify(repository).save(lancamento);
+    }
+
+    @Test
+    @DisplayName("Buscar por Id")
+    public void deveRetornarUmLancamentoQuandoBuscarPorUmIdValido(){
+        //cenário
+        var lancamento = criarLancamento();
+        when(repository.findById(lancamento.getId())).thenReturn(Optional.of(lancamento));
+
+        //execução
+        var resultado = lancamentoService.obterPorId(lancamento.getId());
+
+        //verificação
+        assertThat(resultado.isPresent()).isTrue();
+        assertEquals(resultado.get().getId(), lancamento.getId());
+    }
+
+    @Test
+    @DisplayName("Erro ao buscar por Id inválido")
+    public void deveRetornarVazioQuandoBuscarPorUmIdInvalido(){
+        //cenário
+        var lancamento = criarLancamento();
+        when(repository.findById(lancamento.getId())).thenReturn(Optional.of(lancamento));
+        when(repository.findById(2l)).thenReturn(Optional.empty());
+
+        //execução
+        var resultado = lancamentoService.obterPorId(2l);
+
+        //verificação
+        assertThat(resultado.isPresent()).isFalse();
     }
 
     public static Lancamento criarLancamento() {
