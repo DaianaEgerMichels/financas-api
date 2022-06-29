@@ -161,6 +161,21 @@ public class LancamentoServiceTest {
         assertThat(resultado).contains(lancamento);
     }
 
+    @Test
+    @DisplayName("Atualizar status lançamento")
+    public void deveAtualizarStatusDoLancamentoQuandoPassarUmStatusValido(){
+        //cenário
+        var lancamento = criarLancamento();
+        var novoStatus = StatusLancamento.EFETIVADO;
+
+        //execução
+        lancamentoService.atualizarStatus(lancamento, novoStatus);
+
+        //verificação
+        assertThat(lancamento.getStatus()).isEqualByComparingTo(novoStatus);
+        verify(repository).save(lancamento);
+    }
+
     public static Lancamento criarLancamento() {
         return Lancamento.builder()
                 .id(1l)
