@@ -19,10 +19,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static com.github.daianaegermichels.financas.service.UsuarioServiceTest.criarUsuario;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
 
 
@@ -174,6 +176,36 @@ public class LancamentoServiceTest {
         //verificação
         assertThat(lancamento.getStatus()).isEqualByComparingTo(novoStatus);
         verify(repository).save(lancamento);
+    }
+
+    @Test
+    @DisplayName("Buscar por Id")
+    public void deveRetornarUmLancamentoQuandoBuscarPorUmIdValido(){
+        //cenário
+        var lancamento = criarLancamento();
+        when(repository.findById(lancamento.getId())).thenReturn(Optional.of(lancamento));
+
+        //execução
+        var resultado = lancamentoService.obterPorId(lancamento.getId());
+
+        //verificação
+        assertThat(resultado.isPresent()).isTrue();
+        assertEquals(resultado.get().getId(), lancamento.getId());
+    }
+
+    @Test
+    @DisplayName("Erro ao buscar por Id inválido")
+    public void deveRetornarVazioQuandoBuscarPorUmIdInvalido(){
+        //cenário
+        var lancamento = criarLancamento();
+        when(repository.findById(lancamento.getId())).thenReturn(Optional.of(lancamento));
+        when(repository.findById(2l)).thenReturn(Optional.empty());
+
+        //execução
+        var resultado = lancamentoService.obterPorId(2l);
+
+        //verificação
+        assertThat(resultado.isPresent()).isFalse();
     }
 
     public static Lancamento criarLancamento() {
