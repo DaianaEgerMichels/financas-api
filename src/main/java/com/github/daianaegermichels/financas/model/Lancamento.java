@@ -6,11 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.convert.Jsr310Converters;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -42,7 +41,7 @@ public class Lancamento {
     private BigDecimal valor;
 
     @Column(name = "data_cadastro")
-    private LocalDate dataCadastro;
+    private LocalDateTime dataCadastro;
 
     @Column(name= "tipo")
     @Enumerated(value = EnumType.STRING)

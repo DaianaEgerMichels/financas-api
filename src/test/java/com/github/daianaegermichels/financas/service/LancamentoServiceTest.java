@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -67,7 +68,7 @@ public class LancamentoServiceTest {
     public void naoDeveSalvarUmLancamentoQuandoHouverErroDeValidacao(){
 
         //cenário
-        var lancamento = Lancamento.builder().ano(2021).descricao("Teste lançamento inválido").mes(5).dataCadastro(LocalDate.now()).build();
+        var lancamento = Lancamento.builder().ano(2021).descricao("Teste lançamento inválido").mes(5).dataCadastro(LocalDateTime.now()).build();
         doThrow(RegraNegocioException.class).when(service).validar(lancamento);
 
         //ação
@@ -131,7 +132,7 @@ public class LancamentoServiceTest {
                 .valor(BigDecimal.valueOf(100.00))
                 .tipo(TipoLancamento.RECEITA)
                 .status(StatusLancamento.PENDENTE)
-                .dataCadastro(LocalDate.now())
+                .dataCadastro(LocalDateTime.now())
                 .usuario(criarUsuario())
                 .build();
 
@@ -431,7 +432,7 @@ public class LancamentoServiceTest {
                 .valor(BigDecimal.valueOf(100.00))
                 .tipo(TipoLancamento.RECEITA)
                 .status(StatusLancamento.PENDENTE)
-                .dataCadastro(LocalDate.now())
+                .dataCadastro(LocalDateTime.now())
                 .usuario(criarUsuario())
                 .build();
     }
