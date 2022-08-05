@@ -84,12 +84,13 @@ public class LancamentoController {
         }).orElseGet(()-> ResponseEntity.badRequest().body("Lançamento não encontrado na base de dados!"));
     }
 
-    @GetMapping
+    @GetMapping("id_lancamento")
     public ResponseEntity buscar (
             @RequestParam(value = "descricao", required = false) String descricao,
             @RequestParam(value = "mes", required = false) Integer mes,
             @RequestParam(value = "ano", required = false) Integer ano,
-            @RequestParam(value = "usuario") Long idUsuario
+            @RequestParam(value = "usuario") Long idUsuario,
+            @PathVariable(name= "id_lancamento") Long idLancamento
     ){
         var lancamentoFiltro = new Lancamento();
         lancamentoFiltro.setDescricao(descricao);
