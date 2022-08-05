@@ -84,13 +84,12 @@ public class LancamentoController {
         }).orElseGet(()-> ResponseEntity.badRequest().body("Lançamento não encontrado na base de dados!"));
     }
 
-    @GetMapping("id_lancamento")
+    @GetMapping
     public ResponseEntity buscar (
             @RequestParam(value = "descricao", required = false) String descricao,
             @RequestParam(value = "mes", required = false) Integer mes,
             @RequestParam(value = "ano", required = false) Integer ano,
-            @RequestParam(value = "usuario") Long idUsuario,
-            @PathVariable(name= "id_lancamento") Long idLancamento
+            @RequestParam(value = "usuario") Long idUsuario
     ){
         var lancamentoFiltro = new Lancamento();
         lancamentoFiltro.setDescricao(descricao);
@@ -107,6 +106,12 @@ public class LancamentoController {
         var lancamentos = service.buscar(lancamentoFiltro);
         return ResponseEntity.ok(lancamentos);
 
+    }
+
+    @GetMapping("{id_lancamento}")
+    public ResponseEntity obterLancamentoPorId (@PathVariable (value = "id_lancamento") Long idLancamento){
+        return service.obterPorId(idLancamento).map(lancamento -> new ResponseEntity(converterParaDTO(lancamento), HttpStatus.OK))
+                .orElseGet(()-> new ResponseEntity(HttpStatus.NOT_FOUND));
     }
 
     private Lancamento converter(LancamentoDTO dto){
@@ -130,5 +135,18 @@ public class LancamentoController {
         }
 
         return lancamento;
+    }
+
+    private LancamentoDTO converterParaDTO(Lancamento lancamento){
+        return LancamentoDTO.builder()
+                .id(lancamento.getId())
+                .descricao(lancamento.getDescricao())
+                .valor(lancamento.getValor())
+                .mes(lancamento.getMes())
+                .ano(lancamento.getAno())
+                .status(lancamento.getStatus().name())
+                .tipo(lancamento.getTipo().name())
+                .usuario(lancamento.getUsuario().getId())
+                .build();
     }
 }
