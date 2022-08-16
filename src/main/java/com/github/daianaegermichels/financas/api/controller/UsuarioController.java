@@ -1,9 +1,11 @@
 package com.github.daianaegermichels.financas.api.controller;
 
+import com.github.daianaegermichels.financas.dto.TokenDTO;
 import com.github.daianaegermichels.financas.dto.UsuarioDTO;
 import com.github.daianaegermichels.financas.exception.ErroAutenticacao;
 import com.github.daianaegermichels.financas.exception.RegraNegocioException;
 import com.github.daianaegermichels.financas.model.Usuario;
+import com.github.daianaegermichels.financas.service.JwtService;
 import com.github.daianaegermichels.financas.service.LancamentoService;
 import com.github.daianaegermichels.financas.service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -21,16 +23,21 @@ public class UsuarioController {
 
     private LancamentoService lancamentoService;
 
-    public UsuarioController(UsuarioService usuarioService, LancamentoService lancamentoService) {
+    private JwtService jwtService;
+
+    public UsuarioController(UsuarioService usuarioService, LancamentoService lancamentoService, JwtService jwtService) {
         this.usuarioService = usuarioService;
         this.lancamentoService = lancamentoService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/autenticar")
-    public ResponseEntity autenticar(@RequestBody UsuarioDTO usuarioDTO){
+    public ResponseEntity<?> autenticar(@RequestBody UsuarioDTO usuarioDTO){
         try {
             var usuarioAutenticado= usuarioService.autenticar(usuarioDTO.getEmail(), usuarioDTO.getSenha());
-            return ResponseEntity.ok(usuarioAutenticado);
+            String token = jwtService.gerarToken(usuarioAutenticado);
+            TokenDTO tokenDTO = new TokenDTO(usuarioAutenticado.getNome(), token);
+            return ResponseEntity.ok(tokenDTO);
         } catch (ErroAutenticacao e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
