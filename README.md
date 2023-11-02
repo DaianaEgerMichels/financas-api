@@ -1,9 +1,9 @@
-<h1 align="center">JAVA - SPRING BOOT - API REST</h1>
+<h1 align="center">JAVA - SPRING BOOT - REST API</h1>
 
 
 <p align="center">
-BACKEND: desenvolvimento de api rest para aplicação de finanças do curso de Spring Boot + React JS da Udemy.
-<br/> Repositório do FRONTEND: https://github.com/DaianaEgerMichels/financas-app
+BACKEND: REST API development for finance application.
+<br/> Repository of FRONTEND: https://github.com/DaianaEgerMichels/financas-app
 </p>
 
 
